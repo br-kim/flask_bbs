@@ -1,0 +1,31 @@
+{% extends'layout.html' %}
+
+{% block content %}
+    <style>
+        table,tr,td,th{
+            border: 1px solid black;
+            text-align: center;
+        }
+    </style>
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>DB 연결해보기</h1>
+        <p class="lead">
+          게시판 만들어보기.
+        </p>
+        
+        <table style="margin: auto; ">
+            <th>EMPNO</th> <th>ENAME</th> <th>JOB</th> <th>MGR</th> <th>HIREDATE</th> <th>SAL</th> <th>COMM</th> <th>DEPTNO</th>
+        {% for row in db_data %}
+        <tr>
+            <td>{{row['EMPNO']}}</td> <td>{{row['ENAME']}}</td> <td>{{row['JOB']}}</td> 
+            <td>{{row['MGR']}}</td> <td>{{row['HIREDATE']}}</td> <td>{{row['SAL']}}</td> 
+            <td>{{row['COMM']}}</td> <td>{{row['DEPTNO']}}</td>
+        </tr>
+        {% endfor %}
+        </table>
+      </div>
+
+    </div><!-- /.container -->
+{% endblock %}
