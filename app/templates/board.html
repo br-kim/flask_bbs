@@ -14,10 +14,10 @@
 <body>
 </body>
     <table>
-    <th>번호</th><th>내용</th>
+    <th>번호</th><th>제목</th><th>글쓴이</th>
     {% for post in posts %}
     <tr>
-        <td>{{post.article_number}}</td><td>{{post.article_contents}}</td>
+        <td>{{post.article_number}}</td><td><a href="/article/{{post.article_number}}">{{post.article_title}}</a></td><td>{{post.article_writer}}</td>
     </tr>
     {% endfor %}
     </table>

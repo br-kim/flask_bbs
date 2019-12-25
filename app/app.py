@@ -2,12 +2,22 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from database import bbs_dao
 from flask_sqlalchemy import SQLAlchemy
 from database import db_orm
+from sqlalchemy_utils import database_exists, create_database
 import sqlalchemy
 
 app = Flask(__name__)
 app.secret_key = 'testkey'
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:1234@localhost/testdb"
-db_orm.db.init_app(app)
+
+#Create Databases 
+engine = sqlalchemy.create_engine("mysql://root:1234@localhost/testdb")
+if not database_exists(engine.url) :
+    create_database(engine.url)
+
+with app.app_context():
+    app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:1234@localhost/testdb"
+    app.config['MYSQL_DATABASE_CHARSET'] = 'utf8mb4'
+    db_orm.db.init_app(app)
+    db_orm.db.create_all()
 
 @app.route('/')
 def index():
@@ -66,6 +76,31 @@ def need_login():
 def board():
     post = db_orm.Article_list.query.filter().all()
     return render_template('board.html',posts=post)
+
+@app.route('/write_article')
+def write_article():
+    return render_template('write_article.html')    
+
+@app.route('/write_article_result',methods=['POST'])
+def write_article_result():
+    user_id = session['login_user']
+    article = db_orm.Article_list(user_id,request.form["article_title"],request.form["article_contents"])
+    db_orm.db.session.add(article)
+    result = None
+    try :
+        db_orm.db.session.commit()
+    except :
+        result = "글 쓰기 실패"
+    else :
+        result = "글 쓰기 성공"
+
+    return render_template('write_article_result.html',result = result)
+
+@app.route('/article/<target_article_number>')
+def article(target_article_number):
+    article = db_orm.Article_list.query.filter_by(article_number=target_article_number).first()
+    return article.article_contents
+
 
 if __name__=="__main__":
     app.run()

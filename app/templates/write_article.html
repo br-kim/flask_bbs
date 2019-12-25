@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+<style>
+    textarea {
+        width : 500px;
+        height : 100px;
+        resize : none;
+    }
+</style>
+</head>
+<body>
+    글 쓰기 페이지입니다.<br>
+    <form action="/write_article_result" method='POST'>
+        제목<br>
+        <input type="text" name="article_title"><br>
+        내용<br>
+        <textarea name="article_contents"></textarea><br>
+        <input type="submit" value="작성">
+    </form>
+</body>
+</html>
