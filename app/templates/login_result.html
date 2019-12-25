@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<head>
-</head>
-<body>
-    {{text}}
-</body>
-</html>
+{% extends'my_layout.html' %}
+
+{% block content %}
+{{text}}<br>
+<a href="/board">게시판으로 가기</a>
+{% endblock %}

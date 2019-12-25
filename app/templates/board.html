@@ -14,11 +14,15 @@
 <body>
 </body>
     <table>
-    <th>번호</th><th>제목</th><th>글쓴이</th>
-    {% for post in posts %}
+    <th>번호</th><th>제목</th><th>글쓴이</th><th>작성 일자</th>
+    {% for post in posts|reverse %}
     <tr>
-        <td>{{post.article_number}}</td><td><a href="/article/{{post.article_number}}">{{post.article_title}}</a></td><td>{{post.article_writer}}</td>
+        <td>{{post.article_number}}</td>
+        <td><a href="/article/{{post.article_number}}">{{post.article_title}}</a></td>
+        <td>{{post.article_writer}}</td>
+        <td>{{post.article_time}}</td>
     </tr>
     {% endfor %}
     </table>
+    <a href="/write_article">글쓰기</a>
 </html>

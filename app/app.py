@@ -3,6 +3,7 @@ from database import bbs_dao
 from flask_sqlalchemy import SQLAlchemy
 from database import db_orm
 from sqlalchemy_utils import database_exists, create_database
+from datetime import datetime
 import sqlalchemy
 
 app = Flask(__name__)
@@ -65,8 +66,10 @@ def login_result():
 
 @app.route('/about')
 def about():
-    return redirect(url_for('need_login')) if not session.get('login_user') else None
-    return "로그인 됨. %s "%session.get('login_user')#render_template('about.html')
+    if not session.get('login_user') :
+        return redirect(url_for('need_login'))  
+    else :
+        return render_template('about.html')
 
 @app.route('/need_login')
 def need_login():
@@ -84,23 +87,22 @@ def write_article():
 @app.route('/write_article_result',methods=['POST'])
 def write_article_result():
     user_id = session['login_user']
-    article = db_orm.Article_list(user_id,request.form["article_title"],request.form["article_contents"])
+    article = db_orm.Article_list(user_id,request.form["article_title"],request.form["article_contents"],datetime.now())
     db_orm.db.session.add(article)
-    result = None
+    _result = None
     try :
         db_orm.db.session.commit()
     except :
-        result = "글 쓰기 실패"
+        _result = "글 쓰기 실패"
     else :
-        result = "글 쓰기 성공"
+        _result = "글 쓰기 성공"
 
-    return render_template('write_article_result.html',result = result)
+    return render_template('write_article_result.html',result = _result)
 
 @app.route('/article/<target_article_number>')
 def article(target_article_number):
-    article = db_orm.Article_list.query.filter_by(article_number=target_article_number).first()
-    return article.article_contents
-
+    _article = db_orm.Article_list.query.filter_by(article_number=target_article_number).first()
+    return render_template('article.html',article = _article)
 
 if __name__=="__main__":
     app.run()

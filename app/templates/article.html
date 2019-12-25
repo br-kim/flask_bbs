@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+    <head>
+        <style>
+            table {
+              width: 80%;
+              border: 1px solid #444444;
+              border-collapse: collapse;
+            }
+            th,td{
+                border: 1px solid #444444;
+                width: 200px;
+            }
+            td.contents {
+                height: 500px;
+            }
+          </style>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th>제목</th><th>{{article.article_title}}</th>
+            </tr>
+            <tr>
+                <td colspan="2">글쓴이 : {{article.article_writer}} 작성일자 : {{article.article_time}}
+            </tr>
+            <tr>
+                <td class="contents"colspan="2">{{article.article_contents}}</td>
+            </tr>
+        </table>
+    </body>
+
+</html>
