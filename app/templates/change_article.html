@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    textarea {
+        width : 500px;
+        height : 100px;
+        resize : none;
+    }
+</style>
+</head>
+<body>
+    글 수정 페이지입니다.<br>
+    <form action="/change_article_result" method='POST'>
+        제목<br>
+        <input type="text" name="article_title"><br>
+        내용<br>
+        <textarea name="article_contents"></textarea><br>
+        <input type="submit" value="수정">
+        <input type="hidden" value={{number}} name="number">
+    </form>
+</body>
+</html>

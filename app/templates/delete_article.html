@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    글을 정말 삭제하시겠습니까?
+    <form action="/delete" method="post">
+        <input type="submit" value="삭제">
+        <input type="hidden" value="article" name="what">
+        <input type="hidden" value={{number}} name="number">
+    </form>
+    <br>
+    <button type="button" onclick="history.back()">취소</button>
+</body>
+</html>

@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-#from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from database import db_orm
 from sqlalchemy_utils import database_exists, create_database
 from datetime import datetime
 import sqlalchemy
 
 app = Flask(__name__)
-app.secret_key = 'testkey'
+app.secret_key = 'test_key'
 
 # Create Databases
 engine = sqlalchemy.create_engine("mysql://root:1234@localhost/testdb")
@@ -92,13 +92,13 @@ def write_article():
 @app.route('/write_article_result', methods=['POST'])
 def write_article_result():
     user_id = session['login_user']
-    article = db_orm.Article_list(user_id, request.form["article_title"], request.form["article_contents"],
-                                  datetime.now())
-    db_orm.db.session.add(article)
+    my_article = db_orm.Article_list(user_id, request.form["article_title"], request.form["article_contents"],
+                                     datetime.now())
+    db_orm.db.session.add(my_article)
     _result = None
     try:
         db_orm.db.session.commit()
-    except:
+    except sqlalchemy.exc.IntegrityError:
         _result = "글 쓰기 실패"
     else:
         _result = "글 쓰기 성공"
@@ -112,5 +112,46 @@ def article(target_article_number):
     return render_template('article.html', article=_article)
 
 
+@app.route('/change_article', methods=['POST'])
+def change_article():
+    article_number = request.form['article_num']
+    return render_template('change_article.html', number=article_number)
+
+
+@app.route('/change_article_result', methods=['POST'])
+def change_article_result():
+    target_article = db_orm.Article_list.query.filter_by(article_number=request.form['number']).first()
+    target_article.article_title = request.form['article_title']
+    target_article.article_contents = request.form['article_contents']
+    target_article.time = datetime.now()
+    try:
+        db_orm.db.session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        return "글 수정 실패"
+    return "글이 수정되었습니다."
+
+
+@app.route('/delete_article', methods=['POST'])
+def delete_article():
+    article_number = request.form['article_num']
+    return render_template('delete_article.html', number=article_number)
+
+
+@app.route('/delete', methods=['POST'])
+def delete():
+    if request.form['what'] == 'article':
+        db_orm.Article_list.query.filter_by(article_number=request.form['number']).delete()
+        try:
+            db_orm.db.session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            print("에러 발생")
+        else:
+            print("글 삭제")
+    elif request.form['what'] == 'comment':
+        print("댓글 삭제")
+    return "글이 삭제되었습니다."
+
+
 if __name__ == "__main__":
+    app.debug = True
     app.run()
