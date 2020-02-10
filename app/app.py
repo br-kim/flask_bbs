@@ -64,8 +64,7 @@ def login_result():
     return render_template('login_result.html', text=result)
 
 
-@app.route(
-    '/about')
+@app.route('/about')
 def about():
     if not session.get('login_user'):
         return redirect(url_for('need_login'))
@@ -103,7 +102,7 @@ def write_article_result():
     else:
         _result = "글 쓰기 성공"
 
-    return render_template('write_article_result.html', result=_result)
+    return render_template('board_result.html', result=_result)
 
 
 @app.route('/article/<target_article_number>')
@@ -127,8 +126,10 @@ def change_article_result():
     try:
         db_orm.db.session.commit()
     except sqlalchemy.exc.IntegrityError:
-        return "글 수정 실패"
-    return "글이 수정되었습니다."
+        result = "글 수정 실패"
+    else:
+        result = "글 수정 성공"
+    return render_template('board_result.html', result=result)
 
 
 @app.route('/delete_article', methods=['POST'])
@@ -139,17 +140,18 @@ def delete_article():
 
 @app.route('/delete', methods=['POST'])
 def delete():
+    result = None
     if request.form['what'] == 'article':
         db_orm.Article_list.query.filter_by(article_number=request.form['number']).delete()
         try:
             db_orm.db.session.commit()
         except sqlalchemy.exc.IntegrityError:
-            print("에러 발생")
+            result = "에러 발생"
         else:
-            print("글 삭제")
+            result = "글 삭제 완료"
     elif request.form['what'] == 'comment':
-        print("댓글 삭제")
-    return "글이 삭제되었습니다."
+        result = "댓글 삭제"
+    return render_template('board_result.html', result=result)
 
 
 if __name__ == "__main__":
