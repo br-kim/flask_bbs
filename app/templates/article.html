@@ -41,6 +41,22 @@
             <input type="submit" value="삭제">
             <input type="hidden" value="{{article.article_number}}" name="article_num">
         </form><br>
+        <table>
+            {% for comment in comments %}
+             <tr>
+                 <td>{{ comment.comment_writer }}</td>
+                 <td>{{ comment.comment_contents }}</td>
+                 <td>{{ comment.comment_time }}</td>
+            </tr>
+            {% endfor %}
+        </table><br>
+        <form action="/write_comment" method="post">
+            <input type="hidden" value="{{ article.article_number }}" name="article_num">
+            <input type="text" name="comment_contents" size="100">
+            <input type="submit" value="작성">
+
+        </form><br>
+        </form><br>
         <a href="/board">게시판으로 가기</a>
     </body>
 

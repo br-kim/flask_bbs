@@ -108,7 +108,8 @@ def write_article_result():
 @app.route('/article/<target_article_number>')
 def article(target_article_number):
     _article = db_orm.Article_list.query.filter_by(article_number=target_article_number).first()
-    return render_template('article.html', article=_article)
+    _comments = db_orm.Comment_list.query.filter_by(comment_parent=target_article_number).all()
+    return render_template('article.html', article=_article, comments=_comments)
 
 
 @app.route('/change_article', methods=['POST'])
@@ -152,6 +153,24 @@ def delete():
     elif request.form['what'] == 'comment':
         result = "댓글 삭제"
     return render_template('board_result.html', result=result)
+
+
+@app.route('/write_comment', methods=['POST'])
+def write_comment():
+    _result = None
+    user_id = session['login_user']
+
+    my_comment = db_orm.Comment_list(user_id, request.form['comment_contents'], datetime.now(),
+                                     request.form['article_num'])
+    db_orm.db.session.add(my_comment)
+    try:
+        db_orm.db.session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        _result = "댓글 쓰기 실패"
+    else:
+        _result = "댓글 쓰기 성공"
+
+    return render_template('board_result.html', result=_result)
 
 
 if __name__ == "__main__":

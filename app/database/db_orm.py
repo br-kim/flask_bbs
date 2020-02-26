@@ -32,3 +32,19 @@ class Article_list(db.Model):
 
     def __str__(self):
         return '%s %s %s %s' % (self.article_number, self.article_writer, self.article_title, self.article_contents)
+
+
+class Comment_list(db.Model):
+    __tablename__ = "comment_list"
+
+    comment_number = db.Column(db.Integer, primary_key=True)
+    comment_contents = db.Column(db.Text)
+    comment_writer = db.Column(db.String(20))
+    comment_time = db.Column(db.DateTime(timezone=True))
+    comment_parent = db.Column(db.Integer)
+
+    def __init__(self, comment_writer, comment_contents, comment_time, comment_parent):
+        self.comment_writer = comment_writer
+        self.comment_contents = comment_contents
+        self.comment_time = comment_time
+        self.comment_parent = comment_parent
